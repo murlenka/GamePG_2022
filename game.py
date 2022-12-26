@@ -19,8 +19,22 @@ class Particle(pygame.sprite.Sprite):
         self.velocity = [dx, dy]
         # и свои координаты
         self.rect.x, self.rect.y = pos
-        self.all_sprites.draw(self.screen)
-        self.all_sprites.update()
+
+        # гравитация будет одинаковой (значение константы)
+        self.gravity = GRAVITY
+
+    def update(self):
+        # применяем гравитационный эффект:
+        # движение с ускорением под действием гравитации
+        self.velocity[1] += self.gravity
+        # перемещаем частицу
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+        # убиваем, если частица ушла за экран
+        if not self.rect.colliderect((0, 0, app.width, app.height)):
+            self.kill()
+
+
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, app, sheet, columns, rows, x, y):
@@ -44,19 +58,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
 
-        # гравитация будет одинаковой (значение константы)
-        self.gravity = GRAVITY
 
-    def update(self):
-        # применяем гравитационный эффект:
-        # движение с ускорением под действием гравитации
-        self.velocity[1] += self.gravity
-        # перемещаем частицу
-        self.rect.x += self.velocity[0]
-        self.rect.y += self.velocity[1]
-        # убиваем, если частица ушла за экран
-        if not self.rect.colliderect((0, 0, app.width, app.height)):
-            self.kill()
 
 class App:
     def __init__(self):
